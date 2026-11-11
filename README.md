@@ -1,23 +1,20 @@
-# Visitor Pass Management System
+# Visitor pass management
 
-A full-stack MERN application that digitizes visitor management for offices and facilities. Visitors receive a QR-code PDF pass via email, and security guards scan it to log check-in and check-out events.
+A visitor system for offices, built as my final project at Tutedude. An employee approves a visit, the visitor gets a PDF pass with a QR code by email, and the guard at the door scans it to log them in and out.
 
----
+## What it does
 
-## Features
+There are four roles, each with its own dashboard: admin, employee, security guard and visitor.
 
-- **Role-based access control** — Admin, Employee, Security Guard, and Visitor roles, each with their own dashboard
-- **Visitor registration with photo upload** — Store a photo ID alongside visitor details
-- **Appointment scheduling** — Employees request and approve visitor appointments
-- **Automated pass generation** — PDF badge with QR code emailed to visitor on approval
-- **QR / manual code scanner** — Security scans QR or types the pass code to check in
-- **OTP verification on check-in** — 6-digit OTP sent to visitor's phone via SMS (Twilio)
-- **Check-in / Check-out tracking** — Full log of every entry and exit
-- **Admin dashboard** — Live stats: total visitors, active inside, appointments today, pending approvals
-- **Visitor directory** — Search by name/email, filter by status, export to CSV
-- **Staff account management** — Admin can create, enable/disable, and delete Employee/Security accounts
-
----
+- Admins and employees register visitors, with an optional photo
+- Employees create appointments and approve them
+- Approving and dispatching a pass generates a QR code, builds a PDF badge and emails it to the visitor
+- The guard scans the QR code with the camera, or types the pass code
+- Check-in is confirmed with a 6-digit OTP sent to the visitor's phone by SMS (Twilio)
+- Every entry and exit is logged
+- The admin dashboard shows total visitors, who is inside right now, today's appointments and pending approvals
+- The visitor directory can be searched, filtered by status and exported to CSV
+- Admins create, disable and delete employee and security accounts
 
 ## Tech Stack
 
@@ -33,8 +30,6 @@ A full-stack MERN application that digitizes visitor management for offices and 
 | PDF | PDFKit |
 | QR Code | qrcode |
 | SMS | Twilio |
-
----
 
 ## Project Structure
 
@@ -98,8 +93,6 @@ tutedude-final-project/
             └── visitor/VisitorStatus.jsx     # QR pass display
 ```
 
----
-
 ## Setup Guide
 
 ### Prerequisites
@@ -107,14 +100,14 @@ tutedude-final-project/
 - Node.js v18 or higher
 - MongoDB running locally on port 27017, **or** a MongoDB Atlas URI
 
-### 1 — Clone the repo
+### 1. Clone the repo
 
 ```bash
 git clone https://github.com/Inderjeet8877/tutedude_final_project.git
 cd tutedude_final_project
 ```
 
-### 2 — Backend environment variables
+### 2. Backend environment variables
 
 Create a file called `.env` inside the `/backend` folder:
 
@@ -133,7 +126,7 @@ SMTP_PASS=your_gmail_app_password
 FROM_NAME=Visitor Pass System
 FROM_EMAIL=your_gmail@gmail.com
 
-# Twilio (for OTP SMS) — leave blank to skip SMS
+# Twilio (for OTP SMS) - leave blank to skip SMS
 TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxx
 TWILIO_AUTH_TOKEN=your_twilio_auth_token
 TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
@@ -141,7 +134,7 @@ TWILIO_PHONE_NUMBER=+1xxxxxxxxxx
 
 > **Gmail App Password**: Go to Google Account → Security → 2-Step Verification → App Passwords. Generate one for "Mail".
 
-### 3 — Install dependencies and start
+### 3. Install dependencies and start
 
 **Backend:**
 
@@ -161,7 +154,7 @@ npm run dev
 # UI available at http://localhost:5173
 ```
 
-### 4 — Seed demo data
+### 4. Seed demo data
 
 With the backend running and MongoDB connected:
 
@@ -179,27 +172,23 @@ This creates the following test accounts:
 | Security | security@system.com    | password123 |
 | Visitor  | visitor@system.com     | password123 |
 
----
-
-## How It Works — Full Flow
+## How It Works: Full Flow
 
 1. **Admin** logs in and creates Employee / Security accounts from **Manage Staff**.
 2. **Admin or Employee** registers a visitor (name, email, phone, optional photo).
 3. **Employee** creates an appointment for that visitor, then approves it from **My Appointments**.
-4. Employee clicks **Dispatch Pass Email** — the backend generates a QR code, builds a PDF badge, and emails it to the visitor.
+4. Employee clicks **Dispatch Pass Email**, the backend generates a QR code, builds a PDF badge, and emails it to the visitor.
 5. **Visitor** arrives and shows the PDF (on phone or printed). The **Security guard** scans the QR code or types the pass code.
 6. An OTP is sent to the visitor's phone. The visitor tells the code to the guard who enters it → **check-in logged**.
 7. On departure the guard scans again → **check-out logged**, pass marked Used.
 8. **Admin dashboard** shows live counts and recent activity.
-
----
 
 ## API Reference
 
 All endpoints are prefixed with `/api`.  
 Protected routes require the header: `Authorization: Bearer <token>`
 
-### Auth — `/api/auth`
+### Auth: `/api/auth`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -208,7 +197,7 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | POST | `/logout` | Protected | Clear auth cookie |
 | GET | `/me` | Protected | Get current user |
 
-### Users (Staff Management) — `/api/users`
+### Users (Staff Management): `/api/users`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -217,7 +206,7 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | PUT | `/:id/toggle-status` | Admin | Enable / disable account |
 | DELETE | `/:id` | Admin | Permanently delete account |
 
-### Visitors — `/api/visitors`
+### Visitors: `/api/visitors`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -227,7 +216,7 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | PUT | `/:id` | Admin, Security | Update visitor details |
 | DELETE | `/:id` | Admin | Delete visitor record |
 
-### Appointments — `/api/appointments`
+### Appointments: `/api/appointments`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -237,7 +226,7 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | PUT | `/:id` | Admin, Employee, Security | Update status or details |
 | DELETE | `/:id` | Admin | Delete appointment |
 
-### Passes — `/api/passes`
+### Passes: `/api/passes`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -245,21 +234,19 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | GET | `/verify/:passCode` | Admin, Security | Look up a pass by code |
 | GET | `/my-passes` | Visitor, Admin | Get passes for the logged-in visitor |
 
-### Check Logs — `/api/checklogs`
+### Check Logs: `/api/checklogs`
 
 | Method | Path | Body | Auth | Description |
 |--------|------|------|------|-------------|
 | POST | `/scan` | `{ passCode }` | Admin, Security | Scan pass → triggers OTP or records check-out |
 | POST | `/verify-otp` | `{ passCode, otp }` | Admin, Security | Verify OTP → records check-in |
-| GET | `/` | — | Admin, Security | All check logs |
+| GET | `/` |, | Admin, Security | All check logs |
 
-### Dashboard — `/api/dashboard`
+### Dashboard: `/api/dashboard`
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/stats` | Admin | Total/active visitors, today's appointments, recent logs |
-
----
 
 ## Deployment (Render)
 
@@ -281,9 +268,7 @@ Protected routes require the header: `Authorization: Bearer <token>`
 5. Set environment variable: `VITE_API_URL=https://your-backend-url.onrender.com/api`
 6. Update `frontend/src/services/api.js` base URL to use `import.meta.env.VITE_API_URL`.
 
----
-
-## Screenshots
+## Screens
 
 | Screen | Description |
 |--------|-------------|
@@ -295,8 +280,6 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | Employee Appointments | Card grid with approve / reject / dispatch pass actions |
 | Security Scanner | Camera QR scan + manual code entry + OTP flow |
 | Visitor Pass | QR code display card with pass status |
-
----
 
 ## Environment Variables Reference
 
@@ -316,7 +299,3 @@ Protected routes require the header: `Authorization: Bearer <token>`
 | `TWILIO_ACCOUNT_SID` | No | Twilio account SID (SMS OTP) |
 | `TWILIO_AUTH_TOKEN` | No | Twilio auth token |
 | `TWILIO_PHONE_NUMBER` | No | Twilio phone number |
-
----
-
-> Built with Node.js, Express, React, MongoDB, and TailwindCSS as a final project submission.
